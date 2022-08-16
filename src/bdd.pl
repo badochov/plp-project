@@ -1,3 +1,5 @@
+:-[grammar].
+
 % construct_bdd(+Formula, -BDD).
 construct_bdd(F, BDD) :-
     get_variable_order(F, Vars),
@@ -15,9 +17,7 @@ to_leaf(true_, leaf(1)).
 is_literal(true_).
 is_literal(false_).
 
-get_probabiity(Var, P) :-
-    % TODO 
-    P = 1.
+get_probabiity(Var, P) :- (P::Var).
 
 assign_to(and(F1, F2), V, A, and(Nf1, Nf2)) :-
     assign_to(F1, V, A, Nf1),
