@@ -5,10 +5,10 @@ Final project for subject Probabilistic Logic Programming implementing knowledge
 1. Ground program
 2. Break cycles
 3. Convert to logic formula
-    1. To make life remove negation on compund formulas e.g NOT (A OR B) = NOT A AND NOT B
 4. Construct BDD
     1. Construct classic BDD
-        - Recursive Shannon Expansion
+    
+        Recursive Shannon Expansion
     2. Convert to OBDD
 
         BDD is already an OBDD with random variable ordering, and determining best ordering is NP-hard so this step can be skipped. Some heuristics can be used as well
@@ -19,6 +19,7 @@ Final project for subject Probabilistic Logic Programming implementing knowledge
             points to the same node w, then remove v and
             redirect all incoming edges to w.
         - Isomorphism rule 
+
             If the nodes v and w are terminals and if they
             have the same value, then remove node v and
             redirect all incoming edges to node w. If v and w are
