@@ -25,7 +25,7 @@ assign_to(not(F), V, A, not(Nf)) :-
 assign_to(V, V, A, A) :- !.
 assign_to(F, _, _, F) :- !.
 
-% construct_obdd(+Formula, +VariableOrdering, +VariableProbabilities -OBDD)
+% construct_obdd(+Formula, +VariableOrdering, +VariableProbabilities, -OBDD)
 construct_obdd(F, [], _, Leaf) :- 
     simplify_formula(F, Sf),
     to_leaf(Sf, Leaf).
@@ -71,8 +71,32 @@ simplify_formula_const(not(true_), false_) :- !.
 
 % reduce_to_robdd(+OBDD, -ROBDD)
 reduce_to_robdd(OBDD, ROBDD) :- 
-    % TODO
-    OBDD = ROBDD.
+    apply_elimination_rule(OBDD, Eliminated),
+    apply_isomorphism_rule(Eliminated, Isomorphed),
+    ( OBDD = Isomorphed
+    ->
+        OBDD = ROBDD
+    ;
+        reduce_to_robdd(Isomorphed, ROBDD)
+    ).
+
+
+apply_elimination_rule(leaf(X), leaf(X)).
+apply_elimination_rule(node(LOBDD, Val, ROBDD), Eliminated) :-
+    apply_elimination_rule(LOBDD, ElL),
+    apply_elimination_rule(ROBDD, ElR),
+    ( ElL = ElR
+    ->
+        Eliminated = ElR
+    ;
+        Eliminated = node(ElL, Val, ElR)
+    ).
+
+
+apply_isomorphism_rule(OBDD, Isomorphed) :-
+    % Isomorphism is implicit in prolog, that is probability for same node will be calculated only once in calc_probability even without isomorphic elimiation.
+    % Probably structure would be more efficient ans isomorphism made sense if nodes where *pointers* to nodes instead of nodes.
+    OBDD = Isomorphed.
 
 
 % get_variable_order(+Formula, -FreeVars),
