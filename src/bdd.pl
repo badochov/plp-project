@@ -1,9 +1,10 @@
 :-[grammar].
+:-use_module(library(rbtrees)).
 
-% construct_bdd(+Formula, -BDD).
-construct_bdd(F, BDD) :-
+% construct_bdd(+Formula, +VariableProbabilities, -BDD).
+construct_bdd(F, Ps, BDD) :-
     get_variable_order(F, Vars),
-    construct_obdd(F, Vars, OBDD),
+    construct_obdd(F, Vars, Ps, OBDD),
     reduce_to_robdd(OBDD, BDD).
 
 to_leaf(false_, leaf(0)).
@@ -12,9 +13,7 @@ to_leaf(true_, leaf(1)).
 is_literal(true_).
 is_literal(false_).
 
-get_probability(Var, P) :-
-    % TODO
-    P = 0.42.
+get_probability(Var, Ps, P) :- rb_lookup(Var, P, Ps).
 
 assign_to(and(F1, F2), V, A, and(Nf1, Nf2)) :-
     assign_to(F1, V, A, Nf1),
@@ -27,26 +26,26 @@ assign_to(not(F), V, A, not(Nf)) :-
 assign_to(V, V, A, A) :- !.
 assign_to(F, _, _, F) :- !.
 
-% construct_obdd(+Formula, +VariableOrdering, -OBDD)
-construct_obdd(F, [], Leaf) :- 
+% construct_obdd(+Formula, +VariableOrdering, +VariableProbabilities -OBDD)
+construct_obdd(F, [], _, Leaf) :- 
     simplify_formula(F, Sf),
     to_leaf(Sf, Leaf).
-construct_obdd(F, [V|T], OBDD) :-
+construct_obdd(F, [V|T], Ps, OBDD) :-
     simplify_formula(F, Sf),
     ( is_literal(Sf)
     ->
         to_leaf(Sf, OBDD)
     ;
-        get_probability(V, P),
+        get_probability(V, Ps, P),
         assign_to(F, V, false_, Ff),
-        construct_obdd(Ff, T, FalseOBDD),
+        construct_obdd(Ff, T, Ps, FalseOBDD),
         assign_to(F, V, true_, Tf),
-        construct_obdd(Tf, T, TrueOBDD),
+        construct_obdd(Tf, T, Ps, TrueOBDD),
         OBDD = node(FalseOBDD, P, TrueOBDD), !
     ).
 
 % Simplifies formula removing falses and trues from the formula.
-simplify_formula(F, Sf) :- simplify_formula_const(F, Sf).
+simplify_formula(F, Sf) :- simplify_formula_const(F, Sf), !.
 simplify_formula(and(F1, F2), Sf) :- 
     simplify_formula(F1, Sf1),
     simplify_formula(F2, Sf2),
