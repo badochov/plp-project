@@ -1,5 +1,4 @@
-:-[grammar].
-:-use_module(library(rbtrees)).
+:- use_module(library(rbtrees)).
 
 % construct_bdd(+Formula, +VariableProbabilities, -BDD).
 construct_bdd(F, Ps, BDD) :-

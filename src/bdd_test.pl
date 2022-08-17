@@ -1,5 +1,5 @@
 :- begin_tests(bdd).
-:-[bdd].
+:- [bdd].
 
 test(construct_bdd__not) :- 
     rb_empty(Probs),
