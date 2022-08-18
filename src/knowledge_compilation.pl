@@ -9,6 +9,8 @@ to_bdd(Clause, BDD) :-
     ground_program,
     break_cycles,
     to_logic_formula(Clause, F),
+    get_all_clauses(Clauses),
+    get_probs(Clauses, Probs),
     construct_bdd(F, BDD).
 
 % calculate_probability(+Clause, -BDD)
