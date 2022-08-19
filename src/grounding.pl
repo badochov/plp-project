@@ -119,8 +119,12 @@ collect_ground_literals(C, Groundings):-
 
 % ground(+Program, -GroundLiterals, -GroundedProgram)
 % Program is a list of clauses of the form "Prob :: Head <--- Conditions"
-ground([], [], []).
-ground([P1|PT], GroundLiterals, GP):-
+ground(Program, GroundLiterals, GroundedProgram):-
+    ground_iter(Program, UnuniqueGLs, GroundedProgram),
+    list_to_ord_set(UnuniqueGLs, GroundLiterals).
+
+ground_iter([], [], []).
+ground_iter([P1|PT], GroundLiterals, GP):-
     ground_clause(P1, GP1), collect_ground_literals(P1, GL1),
     ground(PT, GL2, GP2),
     append(GP1, GP2, GP), append(GL1, GL2, GroundLiterals).
