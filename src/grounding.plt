@@ -39,21 +39,22 @@ test(collect_ground_literals_function):-
 
 test(ground_program):-
     problog_collect(P),
-    ground(P, GL, GP), !,
-    GL = [::(1,fr(x1)),
-          ::(1,fr(x2)),
+    ground_program(P, GL, GP), !,
+    permutation(GL, [
+        ::(1,fr(x1)),
+        ::(1,fr(x2)),
 
-          ::(0.6,a(x1,y1)),
-          ::(0.6,a(x1,y2)),
-          ::(0.6,a(x2,y1)),
-          ::(0.6,a(x2,y2)),
+        ::(0.6,a(x1,y1)),
+        ::(0.6,a(x1,y2)),
+        ::(0.6,a(x2,y1)),
+        ::(0.6,a(x2,y2)),
 
-          ::(0.3,b(x1)),
-          ::(0.3,b(x2)),
+        ::(0.3,b(x1)),
+        ::(0.3,b(x2)),
 
-          ::(0.8,prob_fr(x1)),
-          ::(0.8,prob_fr(x2))],
-    GP = [
+        ::(0.8,prob_fr(x1)),
+        ::(0.8,prob_fr(x2))]),
+    permutation(GP, [
         ::(1,<---(fr(x1),(a(x1,y1),\+b(x1)))),
         ::(1,<---(fr(x1),(a(x1,y2),\+b(x1)))),
         ::(1,<---(fr(x2),(a(x2,y1),\+b(x2)))),
@@ -62,6 +63,6 @@ test(ground_program):-
         ::(0.8,<---(prob_fr(x1),(a(x1,y1),\+b(x1)))),
         ::(0.8,<---(prob_fr(x1),(a(x1,y2),\+b(x1)))),
         ::(0.8,<---(prob_fr(x2),(a(x2,y1),\+b(x2)))),
-        ::(0.8,<---(prob_fr(x2),(a(x2,y2),\+b(x2))))].
+        ::(0.8,<---(prob_fr(x2),(a(x2,y2),\+b(x2))))]).
 
 :- end_tests(ground).
