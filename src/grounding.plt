@@ -26,13 +26,42 @@ test(ground_compound):-
         GCs), GCs = [(a(x1,y1),b(x1)),(a(x1,y2),b(x1)),
                      (a(x2,y1),b(x2)),(a(x2,y2),b(x2))].
 
+test(collect_ground_literals):-
+    collect_ground_literals((0.6 :: a(X,Y)), GLs),
+    GLs = [::(0.6,a(x1,y1)),::(0.6,a(x1,y2)),::(0.6,a(x2,y1)),::(0.6,a(x2,y2))].
+
+
+test(collect_ground_literals_function):-
+    C = (fr(X) <--- a(X,Y),\+b(X)),
+    collect_ground_literals(C, GLs),
+    GLs = [::(1,fr(x1)),::(1,fr(x2))].
+
+
 test(ground_program):-
-    findall(C, (C = (_ <--- _), C), P),
-    ground(P, GP), 
+    problog_collect(P),
+    ground(P, GL, GP), !,
+    GL = [::(1,fr(x1)),
+          ::(1,fr(x2)),
+
+          ::(0.6,a(x1,y1)),
+          ::(0.6,a(x1,y2)),
+          ::(0.6,a(x2,y1)),
+          ::(0.6,a(x2,y2)),
+
+          ::(0.3,b(x1)),
+          ::(0.3,b(x2)),
+
+          ::(0.8,prob_fr(x1)),
+          ::(0.8,prob_fr(x2))],
     GP = [
-    ::(1,<---(fr(x1),(a(x1,y1),\+b(x1)))),
-    ::(1,<---(fr(x1),(a(x1,y2),\+b(x1)))),
-    ::(1,<---(fr(x2),(a(x2,y1),\+b(x2)))),
-    ::(1,<---(fr(x2),(a(x2,y2),\+b(x2))))].
+        ::(1,<---(fr(x1),(a(x1,y1),\+b(x1)))),
+        ::(1,<---(fr(x1),(a(x1,y2),\+b(x1)))),
+        ::(1,<---(fr(x2),(a(x2,y1),\+b(x2)))),
+        ::(1,<---(fr(x2),(a(x2,y2),\+b(x2)))),
+
+        ::(0.8,<---(prob_fr(x1),(a(x1,y1),\+b(x1)))),
+        ::(0.8,<---(prob_fr(x1),(a(x1,y2),\+b(x1)))),
+        ::(0.8,<---(prob_fr(x2),(a(x2,y1),\+b(x2)))),
+        ::(0.8,<---(prob_fr(x2),(a(x2,y2),\+b(x2))))].
 
 :- end_tests(ground).

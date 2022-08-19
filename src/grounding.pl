@@ -68,20 +68,59 @@ ground_compound(BoundVar, BoundVarOut, C, GC):-
     !, function_sort_grounding(BoundVar, BoundVarOut, C, GC).
 
 
+% ground_clause(+Clause, -GroundClauses)
 ground_clause(C, GCs):-
     problog_clause(C, P, Head, Body),
+
+    ((Body = true, GCs = []);
     
     findall(GC, (
         ground_compound(V-V, Vs, Body, BodyG),
         ground_compound(Vs, _, Head, HeadG),
-        GC = (P :: HeadG <--- BodyG)), GCs).
+        GC = (P :: HeadG <--- BodyG)), GCs)), !.
     
+find_var_sort(Var, Sort, (\+ A)):-
+    find_var_sort(Var, Sort, A), !.
+find_var_sort(Var, Sort, (A,B)):-
+    (find_var_sort(Var, Sort, A);
+    find_var_sort(Var, Sort, B)), !.
+find_var_sort(Var, Sort, (A;B)):-
+    (find_var_sort(Var, Sort, A);
+    find_var_sort(Var, Sort, B)), !.
+find_var_sort(Var, Sort, A):-
+    A =.. [H|Args],
+    nth0(N, Args, Var),
+    length(Args, L),length(SArgs, L),
+    SA =.. [H|SArgs],
+    sort(SA),
+    nth0(N, SArgs, Sort), !.
 
+% True if VarsOut ~ [x1, y2, ...] is a possible binding out of Sorts ~ [[x1,x2], [y1,y2], ...]
+pick_binding([], []).
+pick_binding([S|Sorts], [VO|VarsOut]):-
+    member(VO, S), pick_binding(Sorts, VarsOut).
+
+% if Clause is a function of a sort, return all permutations of groundings.
+collect_ground_literals(C, Groundings):-
+    problog_clause(C, P, Head, B),
+    ((B = true, findall((P :: HeadG),
+        ground_compound(V-V, _, Head, HeadG),
+        Groundings)
+    );(
+        Head =.. [H|HArgs],
+        maplist({B}/[V,S]>>find_var_sort(V,S,B), HArgs, Sorts), !,
+        findall((P :: HeadG),
+            (
+                pick_binding(Sorts, Bindings),
+                HeadG =.. [H|Bindings]
+            ),
+            Groundings)
+    )), !.
+
+% ground(+Program, -GroundLiterals, -GroundedProgram)
 % Program is a list of clauses of the form "Prob :: Head <--- Conditions"
-
-ground([], []).
-
-ground([P1|PT], GP):-
-    ground_clause(P1, GP1),
-    ground(PT, GP2),
-    append(GP1, GP2, GP).
+ground([], [], []).
+ground([P1|PT], GroundLiterals, GP):-
+    ground_clause(P1, GP1), collect_ground_literals(P1, GL1),
+    ground(PT, GL2, GP2),
+    append(GP1, GP2, GP), append(GL1, GL2, GroundLiterals).
