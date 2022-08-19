@@ -34,7 +34,7 @@ sorted_head(GroundedProgram, List):-
     empty_assoc(Heads1),
     sorted_head_iter(GroundedProgram, Heads1, Heads2),
     assoc_to_list(Heads2, ListOfDL),
-    maplist([H-DL, H-L]>>(DL = L-LT, LT = []), ListOfDL, List).
+    maplist([H-DL, H-L]>>(DL = L-LT, LT = []), ListOfDL, List), !.
 
 
 % --- Clark Completion ---
@@ -83,7 +83,7 @@ formula_iter([[H,B]|Biimplications], [F|Formulas]):-
 formula(GroundedProgram, Formula):-
     clark_completion(GroundedProgram, Biimplications),
     formula_iter(Biimplications, Formulas),
-    reduce_and_product(Formulas, Formula).
+    reduce_and_product(Formulas, Formula), !.
 
 
 % Formula evaluation
