@@ -1,7 +1,7 @@
 
 :- begin_tests(formula).
 
-:- [grammar, ground, formula, problog_examples/program_3].
+:- [grounding, formula, problog_examples/program_3].
 
 test(sorted_head):-
     findall(C, (C = (_ <--- _), C), P),
