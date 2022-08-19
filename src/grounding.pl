@@ -68,16 +68,6 @@ ground_compound(BoundVar, BoundVarOut, C, GC):-
     !, function_sort_grounding(BoundVar, BoundVarOut, C, GC).
 
 
-problog_clause(C, P, Head, Body):-
-    C = (P :: Head <--- Body), C, !.
-
-problog_clause(C, 1, Head, Body):-
-    C = (Head <--- Body), C, !.
-
-problog_clause(C, P, Head, []):-
-    C = (P :: Head), C, !.
-
-
 ground_clause(C, GCs):-
     problog_clause(C, P, Head, Body),
     
