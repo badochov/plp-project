@@ -15,7 +15,7 @@ problog_clause(C, P, Head, Body):-
 problog_clause(C, 1, Head, Body):-
     C = (Head <--- Body), C, !.
 
-problog_clause(C, P, Head, []):-
+problog_clause(C, P, Head, true):-
     C = (P :: Head), C, !.
 
 % Collect whole problog program
