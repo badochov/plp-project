@@ -1,6 +1,10 @@
 
 :- begin_tests(ground).
 
+is_permutation(Xs, Ys) :-
+  msort(Xs, Sorted),
+  msort(Ys, Sorted).
+
 :- [grounding, problog_examples/program_3].
 
 test(function_sort_bind_variables_zero_var):-
@@ -40,7 +44,7 @@ test(collect_ground_literals_function):-
 test(ground_program):-
     problog_collect(P),
     ground_program(P, GL, GP), !,
-    permutation(GL, [
+    is_permutation(GL, [
         ::(1,fr(x1)),
         ::(1,fr(x2)),
 
@@ -54,7 +58,7 @@ test(ground_program):-
 
         ::(0.8,prob_fr(x1)),
         ::(0.8,prob_fr(x2))]),
-    permutation(GP, [
+    is_permutation(GP, [
         ::(1,<---(fr(x1),(a(x1,y1),\+b(x1)))),
         ::(1,<---(fr(x1),(a(x1,y2),\+b(x1)))),
         ::(1,<---(fr(x2),(a(x2,y1),\+b(x2)))),
