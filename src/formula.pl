@@ -1,4 +1,5 @@
 
+:- [grounding].
 % Formula.pl
 %
 % Converts a Grounded Program to logic formula.
