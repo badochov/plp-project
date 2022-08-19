@@ -16,15 +16,16 @@ save_bdd(File, BDD) :-
 dot_id(Id):-
   Id is random(9999999999).
 
+dot:dot_attribute_(style).
 
 export_bdd_(BDD, DotNodeId, Leaf0, Leaf1, Out):-
   BDD = node(L, V, R),
   dot_id(DotNodeId),
   dot_node_id(Out, DotNodeId, [label(V)]),
-  ((L = leaf(0) -> dot_arc_id(Out, DotNodeId, Leaf0));
-    (L = leaf(1) -> dot_arc_id(Out, DotNodeId, Leaf1));
+  ((L = leaf(0) -> dot_arc_id(Out, DotNodeId, Leaf0, [style(dashed)]));
+    (L = leaf(1) -> dot_arc_id(Out, DotNodeId, Leaf1, [style(dashed)]));
     (export_bdd_(L, LId, Leaf0, Leaf1, Out),
-      dot_arc_id(Out, DotNodeId, LId))), !,
+      dot_arc_id(Out, DotNodeId, LId, [style(dashed)]))), !,
   ((R = leaf(0) -> dot_arc_id(Out, DotNodeId, Leaf0));
     (R = leaf(1) -> dot_arc_id(Out, DotNodeId, Leaf1));
     (export_bdd_(R, RId, Leaf0, Leaf1, Out),
