@@ -1,5 +1,3 @@
-:- use_module(library(rbtrees)).
-
 :- [formula].
 
 grounded_literals_to_variable_probabilities_tree([], VarPsRB):-
@@ -11,11 +9,10 @@ grounded_literals_to_variable_probabilities_tree([GL|GLs], VarPsRB):-
     rb_insert(VarPsRB1, Head, P, VarPsRB).
 
 
-% construct_bdd(+Formula, +VariableProbabilities, -BDD).
-% VariableProbabilities is a RB-tree
-construct_bdd(F, Ps, BDD) :-
+% construct_bdd(+Formula, -BDD).
+construct_bdd(F, BDD) :-
     get_variable_order(F, Vars),
-    construct_obdd(F, Vars, Ps, OBDD),
+    construct_obdd(F, Vars, OBDD),
     reduce_to_robdd(OBDD, BDD).
 
 to_leaf(false_, leaf(0)).
@@ -38,22 +35,23 @@ assign_to(V, V, A, A) :- !.
 assign_to(F, _, _, F) :- !.
 
 % construct_obdd(+Formula, +VariableOrdering, +VariableProbabilities, -OBDD)
-construct_obdd(F, [], _, Leaf) :- 
+construct_obdd(F, [], Leaf) :- 
     simplify_formula(F, Sf),
     to_leaf(Sf, Leaf).
-construct_obdd(Formula, [V|T], Ps, OBDD) :-
+construct_obdd(Formula, [V|T], OBDD) :-
     simplify_formula(Formula, Fs),
     ( is_literal(Fs)
     ->
         to_leaf(Fs, OBDD)
     ;(
         has_variable(Fs, V) -> (
-        assign_to(Fs, V, false_, Ff),
-        construct_obdd(Ff, T, Ps, FalseOBDD),
-        assign_to(Fs, V, true_, Tf),
-        construct_obdd(Tf, T, Ps, TrueOBDD),
-        OBDD = node(FalseOBDD, V, TrueOBDD)); (
-            construct_obdd(Fs, T, Ps, OBDD)
+            assign_to(Fs, V, false_, Ff),
+            construct_obdd(Ff, T, FalseOBDD),
+            assign_to(Fs, V, true_, Tf),
+            construct_obdd(Tf, T, TrueOBDD),
+            OBDD = node(FalseOBDD, V, TrueOBDD)
+        ); (
+            construct_obdd(Fs, T, OBDD)
         )
     )), !.
 
