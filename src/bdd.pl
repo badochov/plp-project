@@ -41,19 +41,21 @@ assign_to(F, _, _, F) :- !.
 construct_obdd(F, [], _, Leaf) :- 
     simplify_formula(F, Sf),
     to_leaf(Sf, Leaf).
-construct_obdd(F, [V|T], Ps, OBDD) :-
-    simplify_formula(F, Sf),
-    ( is_literal(Sf)
+construct_obdd(Formula, [V|T], Ps, OBDD) :-
+    simplify_formula(Formula, Fs),
+    ( is_literal(Fs)
     ->
-        to_leaf(Sf, OBDD)
-    ;
-        get_probability(V, Ps, P),
-        assign_to(F, V, false_, Ff),
+        to_leaf(Fs, OBDD)
+    ;(
+        has_variable(Fs, V) -> (
+        assign_to(Fs, V, false_, Ff),
         construct_obdd(Ff, T, Ps, FalseOBDD),
-        assign_to(F, V, true_, Tf),
+        assign_to(Fs, V, true_, Tf),
         construct_obdd(Tf, T, Ps, TrueOBDD),
-        OBDD = node(FalseOBDD, P, TrueOBDD), !
-    ).
+        OBDD = node(FalseOBDD, V, TrueOBDD)); (
+            construct_obdd(Fs, T, Ps, OBDD)
+        )
+    )), !.
 
 % Simplifies formula removing falses and trues from the formula.
 simplify_formula(F, Sf) :- simplify_formula_const(F, Sf), !.
@@ -125,3 +127,7 @@ get_free_variables(or(F1, F2), Tmp, V) :-
     get_free_variables(F1, Tmp, Tmp1),
     get_free_variables(F2, Tmp1, V), !.
 get_free_variables(X, Tmp, [X|Tmp]) :- !.
+
+
+has_variable(F, Var):-
+    get_free_variables(F, Vars), member(Var, Vars), !.
