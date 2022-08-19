@@ -1,4 +1,6 @@
 
+:- [grammar].
+
 dlist_append(L1 - T1, T1 - T2, L1 - T2).
 
 
