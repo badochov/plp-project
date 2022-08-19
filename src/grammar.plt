@@ -1,4 +1,4 @@
-:- [grammar, program_3].
+:- [grammar, problog_examples/program_3].
 
 :- begin_tests(grammar).
 

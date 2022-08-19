@@ -1,7 +1,7 @@
 
 :- begin_tests(ground).
 
-:- [grammar, ground, program_3].
+:- [grammar, ground, problog_examples/program_3].
 
 test(function_sort_bind_variables_zero_var):-
     findall(Picked, 
