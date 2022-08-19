@@ -3,22 +3,22 @@
 %
 % Converts a Grounded Program to logic formula.
 % A logic formula will have the following grammar:
-% not - \+
-% and - (,)
-% or  - (;)
+% not(A)
+% and(A,B)
+% or(A,B)
 
 % --- List reduce helpers ---
 
 reduce_or_product([B], B).
 reduce_or_product([B|Bodies], Formula):-
     reduce_or_product(Bodies, F2),
-    Formula = (B; F2).
+    Formula = or(B,F2).
 
 
 reduce_and_product([B], B).
 reduce_and_product([B|Bodies], Formula):-
     reduce_and_product(Bodies, F2),
-    Formula = (B, F2).
+    Formula = and(B,F2).
 
 % --- sorted_head ---
 % Builds a list of `Head-[Body1,Body2]` for the given program.
@@ -36,12 +36,31 @@ sorted_head(GroundedProgram, List):-
     assoc_to_list(Heads2, ListOfDL),
     maplist([H-DL, H-L]>>(DL = L-LT, LT = []), ListOfDL, List), !.
 
+% --- rewrite_to_Hubert_syntax(+GroundedThing, -HubertThing) ---
+% Rewrites a body into Hubert syntax: not/1, and/2, or/2
+rewrite_to_Hubert_syntax(\+ GroundedThing, HubertThing):-
+    rewrite_to_Hubert_syntax(GroundedThing, I),
+    HubertThing = not(I), !.
+
+rewrite_to_Hubert_syntax((GroundedThingA,GroundedThingB), HubertThing):-
+    rewrite_to_Hubert_syntax(GroundedThingA, A),
+    rewrite_to_Hubert_syntax(GroundedThingB, B),
+    HubertThing = and(A,B), !.
+
+rewrite_to_Hubert_syntax((GroundedThingA;GroundedThingB), HubertThing):-
+    rewrite_to_Hubert_syntax(GroundedThingA, A),
+    rewrite_to_Hubert_syntax(GroundedThingB, B),
+    HubertThing = or(A,B), !.
+
+rewrite_to_Hubert_syntax(GroundedThing, GroundedThing):- 
+    ground(GroundedThing), !.
 
 % --- Clark Completion ---
 % Builds bi-implication list for problog program
 clark_completion_iter([], []).
 clark_completion_iter([(H-Bs)|HeadAndBodies], [Bi|Biimplications]):-
-    reduce_or_product(Bs, Bf),
+    maplist(rewrite_to_Hubert_syntax, Bs, BHs),
+    reduce_or_product(BHs, Bf),
     Bi = [H,Bf],
     clark_completion_iter(HeadAndBodies, Biimplications).
 
@@ -49,7 +68,6 @@ clark_completion_iter([(H-Bs)|HeadAndBodies], [Bi|Biimplications]):-
 clark_completion(GroundedProgram, Biimplications):-
     sorted_head(GroundedProgram, HeadAndBodies),
     clark_completion_iter(HeadAndBodies, Biimplications).
-
 
 % Converts a bi-implication to propositional logic
 % A and B are grounded propositional compounds.
@@ -64,12 +82,12 @@ split_biimplication(A, B, Formula):-
     % So: A => B equiv to ~A v B
 
     % A implies B part
-    F1 = (\+ A; B),
+    F1 = or(not(A), B),
 
     % B implies A part
-    F2 = (\+ B; A),
+    F2 = or(not(B), A),
 
-    Formula = (F1, F2).
+    Formula = and(F1, F2).
 
 
 formula_iter([], []).
@@ -87,18 +105,18 @@ formula(GroundedProgram, Formula):-
 
 
 % Formula evaluation
-evaluate_formula(TF_List, (\+ A), TF):-
+evaluate_formula(TF_List, not(A), TF):-
     evaluate_formula(TF_List, A, TF1),
     ((TF1 = true, TF = false);(TF1 = false, TF = true)), !.
 evaluate_formula(TF_List, A, TF):-
     member(A-Av, TF_List), TF = Av, !.
 
-evaluate_formula(TF_List, (A,B), TF):-
+evaluate_formula(TF_List, and(A,B), TF):-
     evaluate_formula(TF_List, A, TF1),
     evaluate_formula(TF_List, B, TF2),
     ((TF1 = true,TF2 = true, TF = true);TF = false), !.
 
-evaluate_formula(TF_List, (A;B), TF):-
+evaluate_formula(TF_List, or(A,B), TF):-
     evaluate_formula(TF_List, A, TF1),
     evaluate_formula(TF_List, B, TF2),
     (((TF1 = true;TF2 = true), TF = true); TF = false), !.
