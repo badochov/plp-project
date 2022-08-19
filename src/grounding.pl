@@ -80,7 +80,7 @@ ground_clause(C, GCs):-
         GC = (P :: HeadG <--- BodyG)), GCs)), !.
     
 find_var_sort(Var, Sort, (\+ A)):-
-    find_var_sort(Var, Sort, A), !.
+    !, find_var_sort(Var, Sort, A).
 find_var_sort(Var, Sort, (A,B)):-
     (find_var_sort(Var, Sort, A);
     find_var_sort(Var, Sort, B)), !.
