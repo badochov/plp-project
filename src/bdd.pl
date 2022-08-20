@@ -1,9 +1,9 @@
-:- use_module(library(rbtrees)).
+:- [formula].
 
-% construct_bdd(+Formula, +VariableProbabilities, -BDD).
-construct_bdd(F, Ps, BDD) :-
+% construct_bdd(+Formula, -BDD).
+construct_bdd(F, BDD) :-
     get_variable_order(F, Vars),
-    construct_obdd(F, Vars, Ps, OBDD),
+    construct_obdd(F, Vars, OBDD),
     reduce_to_robdd(OBDD, BDD).
 
 to_leaf(false_, leaf(0)).
@@ -26,22 +26,25 @@ assign_to(V, V, A, A) :- !.
 assign_to(F, _, _, F) :- !.
 
 % construct_obdd(+Formula, +VariableOrdering, +VariableProbabilities, -OBDD)
-construct_obdd(F, [], _, Leaf) :- 
+construct_obdd(F, [], Leaf) :- 
     simplify_formula(F, Sf),
     to_leaf(Sf, Leaf).
-construct_obdd(F, [V|T], Ps, OBDD) :-
-    simplify_formula(F, Sf),
-    ( is_literal(Sf)
+construct_obdd(Formula, [V|T], OBDD) :-
+    simplify_formula(Formula, Fs),
+    ( is_literal(Fs)
     ->
-        to_leaf(Sf, OBDD)
-    ;
-        get_probability(V, Ps, P),
-        assign_to(F, V, false_, Ff),
-        construct_obdd(Ff, T, Ps, FalseOBDD),
-        assign_to(F, V, true_, Tf),
-        construct_obdd(Tf, T, Ps, TrueOBDD),
-        OBDD = node(FalseOBDD, P, TrueOBDD), !
-    ).
+        to_leaf(Fs, OBDD)
+    ;(
+        has_variable(Fs, V) -> (
+            assign_to(Fs, V, false_, Ff),
+            construct_obdd(Ff, T, FalseOBDD),
+            assign_to(Fs, V, true_, Tf),
+            construct_obdd(Tf, T, TrueOBDD),
+            OBDD = node(FalseOBDD, V, TrueOBDD)
+        ); (
+            construct_obdd(Fs, T, OBDD)
+        )
+    )), !.
 
 % Simplifies formula removing falses and trues from the formula.
 simplify_formula(F, Sf) :- simplify_formula_const(F, Sf), !.
@@ -113,3 +116,7 @@ get_free_variables(or(F1, F2), Tmp, V) :-
     get_free_variables(F1, Tmp, Tmp1),
     get_free_variables(F2, Tmp1, V), !.
 get_free_variables(X, Tmp, [X|Tmp]) :- !.
+
+
+has_variable(F, Var):-
+    get_free_variables(F, Vars), member(Var, Vars), !.
