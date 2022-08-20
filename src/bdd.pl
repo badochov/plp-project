@@ -1,14 +1,5 @@
 :- [formula].
 
-grounded_literals_to_variable_probabilities_tree([], VarPsRB):-
-    rb_new(VarPsRB).
-
-grounded_literals_to_variable_probabilities_tree([GL|GLs], VarPsRB):-
-    grounded_literals_to_variable_probabilities_tree(GLs, VarPsRB1),
-    (P :: Head) = GL,
-    rb_insert(VarPsRB1, Head, P, VarPsRB).
-
-
 % construct_bdd(+Formula, -BDD).
 construct_bdd(F, BDD) :-
     get_variable_order(F, Vars),
