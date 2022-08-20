@@ -1,4 +1,4 @@
-1:- begin_tests(calc_probability).
+:- begin_tests(calc_probability).
 
 :- [calc_probability].
 
@@ -16,7 +16,7 @@ test(calc_probability__2) :-
     float_cmp(P, 0.42).
 
 test(calc_probability__3) :- 
-    rb_new(VarPs1),111
+    rb_new(VarPs1),
     rb_insert(VarPs1, x, 0.42, VarPs2),
     rb_insert(VarPs2, y, 0.6, VarPs3),
     rb_insert(VarPs3, z, 0.9, VarPs),
