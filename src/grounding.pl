@@ -58,7 +58,7 @@ ground_compound(BoundVar, BoundVarOut, C, GC):-
 
 % ground_clause(+Clause, -GroundClauses)
 ground_clause(C, GCs):-
-    problog_clause(C, P, Head, Body),
+    problog_clause(C, _, Head, Body),
 
     (Body = true -> GCs = [] ; (
         findall(GC, (
