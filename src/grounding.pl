@@ -60,13 +60,13 @@ ground_compound(BoundVar, BoundVarOut, C, GC):-
 ground_clause(C, GCs):-
     problog_clause(C, P, Head, Body),
 
-    ((Body = true, GCs = []);
-    
-    findall(GC, (
-        ground_compound(V-V, Vs, Body, BodyG),
-        ground_compound(Vs, _, Head, HeadG),
-        GC = (P :: HeadG <--- BodyG)), GCs)), !.
-    
+    (Body = true -> GCs = [] ; (
+        findall(GC, (
+            ground_compound(V-V, Vs, Body, BodyG),
+            ground_compound(Vs, _, Head, HeadG),
+            GC = (HeadG <--- BodyG)
+            ), GCs)
+    )), !.
 
 % True if VarsOut ~ [x1, y2, ...] is a possible binding out of Sorts ~ [[x1,x2], [y1,y2], ...]
 pick_binding([], []).
@@ -76,19 +76,11 @@ pick_binding([S|Sorts], [VO|VarsOut]):-
 % if Clause is a function of a sort, return all permutations of groundings.
 collect_ground_literals(C, Groundings):-
     problog_clause(C, P, Head, B),
-    ((B = true, findall((P :: HeadG),
+    (B = true ->
+    findall((P :: HeadG),
         ground_compound(V-V, _, Head, HeadG),
-        Groundings)
-    );(
-        Head =.. [H|HArgs],
-        maplist({B}/[V,S]>>find_var_sort(V,S,B), HArgs, Sorts), !,
-        findall((P :: HeadG),
-            (
-                pick_binding(Sorts, Bindings),
-                HeadG =.. [H|Bindings]
-            ),
-            Groundings)
-    )), !.
+        Groundings); Groundings = []
+    ), !.
 
 % ground_program(+Program, -GroundLiterals, -GroundedProgram)
 % Program is a list of clauses of the form "Prob :: Head <--- Conditions"

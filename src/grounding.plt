@@ -38,7 +38,7 @@ test(collect_ground_literals):-
 test(collect_ground_literals_function):-
     C = (fr(X) <--- a(X,Y),\+b(X)),
     collect_ground_literals(C, GLs),
-    GLs = [::(1,fr(x1)),::(1,fr(x2))].
+    GLs = [].
 
 
 test(ground_program):-
