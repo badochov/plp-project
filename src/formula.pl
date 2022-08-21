@@ -37,33 +37,33 @@ sorted_head(GroundedProgram, List):-
     assoc_to_list(Heads2, ListOfDL),
     maplist([H-DL, H-L]>>(DL = L-LT, LT = []), ListOfDL, List), !.
 
-% --- rewrite_to_Hubert_syntax(+GroundedThing, -HubertThing) ---
+% --- to_predicate_syntax(+GroundedThing, -HubertThing) ---
 % Rewrites a body into Hubert syntax: not/1, and/2, or/2
-rewrite_to_Hubert_syntax(\+ GroundedThing, HubertThing):-
-    rewrite_to_Hubert_syntax(GroundedThing, I),
+to_predicate_syntax(\+ GroundedThing, HubertThing):-
+    to_predicate_syntax(GroundedThing, I),
     HubertThing = not(I), !.
 
-rewrite_to_Hubert_syntax((GroundedThingA,GroundedThingB), HubertThing):-
-    rewrite_to_Hubert_syntax(GroundedThingA, A),
-    rewrite_to_Hubert_syntax(GroundedThingB, B),
+to_predicate_syntax((GroundedThingA,GroundedThingB), HubertThing):-
+    to_predicate_syntax(GroundedThingA, A),
+    to_predicate_syntax(GroundedThingB, B),
     HubertThing = and(A,B), !.
 
-rewrite_to_Hubert_syntax((GroundedThingA;GroundedThingB), HubertThing):-
-    rewrite_to_Hubert_syntax(GroundedThingA, A),
-    rewrite_to_Hubert_syntax(GroundedThingB, B),
+to_predicate_syntax((GroundedThingA;GroundedThingB), HubertThing):-
+    to_predicate_syntax(GroundedThingA, A),
+    to_predicate_syntax(GroundedThingB, B),
     HubertThing = or(A,B), !.
 
-rewrite_to_Hubert_syntax(true, true_):- !.
-rewrite_to_Hubert_syntax(false, false_):- !.
+to_predicate_syntax(true, true_):- !.
+to_predicate_syntax(false, false_):- !.
 
-rewrite_to_Hubert_syntax(GroundedThing, GroundedThing):- 
+to_predicate_syntax(GroundedThing, GroundedThing):- 
     ground(GroundedThing), !.
 
 % --- Clark Completion ---
 % Builds bi-implication list for problog program
 clark_completion_iter([], []).
 clark_completion_iter([(H-Bs)|HeadAndBodies], [Bi|Biimplications]):-
-    maplist(rewrite_to_Hubert_syntax, Bs, BHs),
+    maplist(to_predicate_syntax, Bs, BHs),
     reduce_or_product(BHs, Bf),
     Bi = [H,Bf],
     clark_completion_iter(HeadAndBodies, Biimplications).
@@ -112,7 +112,7 @@ formula(Expression, Formula):-
     findall(G,
         ground_compound(V-V, _, Expression, G),
         Groundings),
-    maplist(rewrite_to_Hubert_syntax, Groundings, Formulas),
+    maplist(to_predicate_syntax, Groundings, Formulas),
     reduce_or_product(Formulas, Formula).
 
 

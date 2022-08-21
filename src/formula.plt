@@ -15,9 +15,9 @@ test(sorted_head):-
         prob_fr(x2)-[(prob_fr_err_1(x2,y1),a(x2,y1),\+b(x2)),(prob_fr_err_1(x2,y2),a(x2,y2),\+b(x2))]
     ].
 
-test(rewrite_to_Hubert_syntax):-
+test(to_predicate_syntax):-
     B = (a(x1,y1),\+b(x1)),
-    rewrite_to_Hubert_syntax(B, Bh),
+    to_predicate_syntax(B, Bh),
     Bh = and(a(x1,y1),not(b(x1))).
 
 test(program_formula):-
