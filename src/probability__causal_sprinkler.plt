@@ -61,7 +61,7 @@ test(query_wet_if_szn):-
 
 test(query_wet_if_not_szn):-
     prob(wet, \+szn_spr_sum, P),
-    float_cmp(P, 0.343).
+    float_cmp(P, 0.54).
 
 
 :- end_tests(probability__causal_sprinkler).
