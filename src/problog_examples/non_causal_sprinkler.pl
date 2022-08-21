@@ -1,4 +1,4 @@
-\* non_causal_sprinkler.pl *\
+%  non_causal_sprinkler.pl
 u1 : 0.35. u2 : 0.23. u3 : 0.1. u4 : 0.6. u5 : 0.9. u6 : 0.8.
 sprinkler :- u1.
 szn_spr_sum :- sprinkler.
