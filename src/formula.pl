@@ -109,8 +109,11 @@ program_formula(GroundedProgram, Formula):-
 
 % Convert an expression to propositional logic
 formula(Expression, Formula):-
-    ground_compound(V-V, _, Expression, Grounded),
-    rewrite_to_Hubert_syntax(Grounded, Formula).
+    findall(G,
+        ground_compound(V-V, _, Expression, G),
+        Groundings),
+    maplist(rewrite_to_Hubert_syntax, Groundings, Formulas),
+    reduce_or_product(Formulas, Formula).
 
 
 % Formula evaluation
