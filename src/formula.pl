@@ -107,6 +107,11 @@ program_formula(GroundedProgram, Formula):-
     program_formula_iter(Biimplications, Formulas),
     reduce_and_product(Formulas, Formula), !.
 
+% Convert an expression to propositional logic
+formula(Expression, Formula):-
+    ground_compound(V-V, Vars, Expression, Grounded),
+    rewrite_to_Hubert_syntax(Grounded, Formula).
+
 
 % Formula evaluation
 evaluate_formula(TF_List, not(A), TF):-
