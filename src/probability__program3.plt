@@ -1,7 +1,7 @@
 
-:- [probability, utils, problog_examples/program_3].
+:- begin_tests(probability__program_3).
 
-:- begin_tests(probability).
+:- [probability, utils, problog_examples/program_3].
 
 test(query_true):-
     prob(true, P),
@@ -33,4 +33,4 @@ test(query_b_X):-
     prob(b(X), P),
     float_cmp(P, 0.51).
 
-:- end_tests(probability).
+:- end_tests(probability__program_3).
