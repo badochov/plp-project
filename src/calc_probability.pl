@@ -1,23 +1,12 @@
 :- dynamic cached_probability/2.
 
-:- use_module(library(rbtrees)).
-
 :- [grammar].
 
-grounded_literals_to_variable_probabilities_tree([], VarPsRB):-
-    rb_new(VarPsRB).
-
-grounded_literals_to_variable_probabilities_tree([GL|GLs], VarPsRB):-
-    grounded_literals_to_variable_probabilities_tree(GLs, VarPsRB1),
-    (P :: Head) = GL,
-    rb_insert(VarPsRB1, Head, P, VarPsRB).
-
-
+:- use_module(library(rbtrees)).
 
 % calc_probability(+BDD, +VariableProbabilities, -Probability)
 % Calculates probability for given BDD.
 % VariableProbabilities is an RB tree of (Var -> [ProbYes,ProbNo]
-
 grounded_literals_to_variable_probabilities_tree([], VarPsRB):-
     rb_new(VarPsRB).
 
