@@ -11,3 +11,15 @@ strSepCat([H|T],Sep,Str,Cat) :-
     string_concat(Sep,H,SepH),
     string_concat(Str,SepH,StrSepH),
     strSepCat(T,Sep,StrSepH,Cat).
+
+
+% linear_eq_ref_search(+Item, +HayStack, -Nth0)
+% Searches linearly through list with == operator.
+linear_eq_ref_search(Item, HayStack, Nth0):-
+    linear_eq_ref_search_(Item, HayStack, 0, Nth0).
+
+linear_eq_ref_search_(Item, [H|HayStack], NCur, Nth0):-
+    H == Item
+        -> Nth0 = NCur;
+        NCur1 is NCur + 1,
+        linear_eq_ref_search_(Item, HayStack, NCur1, Nth0).
