@@ -24,6 +24,12 @@ prob\2 is prob\3 with 2nd argument set to true.
 
 prob(+Query, +Evidence, -Probability).
 
+## Tests
+Implementation has multiple tests that can be run with `run_tests.sh` script.
+
+## Examples
+Are located in `src/problog_examples`.
+
 ## Authors
 Hubert Badocha
 Vytautas Mickus
