@@ -144,28 +144,34 @@ assign_to(F, _, _, F) :- !.
 
 
 % Simplifies formula removing falses and trues from the formula.
-simplify_formula(F, Sf) :- simplify_formula_const(F, Sf), !.
-simplify_formula(and(F1, F2), Sf) :-
-    simplify_formula(F1, Sf1),
-    simplify_formula(F2, Sf2),
-    simplify_formula_const(and(Sf1, Sf2), Sf), !.
-simplify_formula(or(F1, F2), Sf) :-
-    simplify_formula(F1, Sf1),
-    simplify_formula(F2, Sf2),
-    simplify_formula_const(or(Sf1, Sf2), Sf), !.
-simplify_formula(not(F), Sf) :-
-    simplify_formula(F, Sf1),
-    simplify_formula_const(not(Sf1), Sf), !.
-simplify_formula(F, F) :- !.
+% simplify_formula(+Formula, -FormulaSimplified)
 
-simplify_formula_const(and(true_, F), Sf) :- simplify_formula(F, Sf), !.
-simplify_formula_const(and(F, true_), Sf) :- simplify_formula(F, Sf), !.
-simplify_formula_const(and(false_, _), false_) :- !.
-simplify_formula_const(and(_, false_), false_) :- !.
-simplify_formula_const(or(false_, F), Sf) :- simplify_formula(F, Sf), !.
-simplify_formula_const(or(F, false_), Sf) :- simplify_formula(F, Sf), !.
-simplify_formula_const(or(true_, _), true_) :- !.
-simplify_formula_const(or(_, true_), true_) :- !.
-simplify_formula_const(not(false_), true_) :- !.
-simplify_formula_const(not(true_), false_) :- !.
+simplify_formula(not(A), Sf):-
+    simplify_formula(A, As),
+    (   As = false_ -> Sf = true_;
+        As = true_  -> Sf = false_;
+        Sf = not(As)
+    ), !.
+
+simplify_formula(and(A, B), Sf):-
+    simplify_formula(A, As), simplify_formula(B, Bs),
+    (
+        (As = false_ ; Bs = false_) -> Sf = false_;
+        (As = true_) -> Sf = Bs;
+        (Bs = true_) -> Sf = As;
+        Sf = and(As, Bs)
+    ), !.
+
+simplify_formula(or(A, B), Sf):-
+    simplify_formula(A, As), simplify_formula(B, Bs),
+    (
+        (As = true_; Bs = true_) -> Sf = true_;
+        (As = false_) -> Sf = Bs;
+        (Bs = false_) -> Sf = As;
+        Sf = or(As, Bs)
+    ), !.
+
+simplify_formula(F, F):-
+    ground(F); writeln(F), throw("This is unexpected."), !.
+
 
