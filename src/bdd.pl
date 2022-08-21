@@ -6,11 +6,11 @@ construct_bdd(F, BDD) :-
     construct_obdd(F, Vars, OBDD),
     reduce_to_robdd(OBDD, BDD).
 
-to_leaf(false_, leaf(0)).
-to_leaf(true_, leaf(1)).
+to_leaf(false, leaf(0)).
+to_leaf(true, leaf(1)).
 
-is_literal(true_).
-is_literal(false_).
+is_literal(true).
+is_literal(false).
 
 get_probability(Var, Ps, P) :- rb_lookup(Var, P, Ps).
 
@@ -25,9 +25,9 @@ construct_obdd(Formula, [V|T], OBDD) :-
         to_leaf(Fs, OBDD)
     ;(
         has_variable(Fs, V) -> (
-            assign_to(Fs, V, false_, Ff),
+            assign_to(Fs, V, false, Ff),
             construct_obdd(Ff, T, FalseOBDD),
-            assign_to(Fs, V, true_, Tf),
+            assign_to(Fs, V, true, Tf),
             construct_obdd(Tf, T, TrueOBDD),
             OBDD = node(FalseOBDD, V, TrueOBDD)
         ); (

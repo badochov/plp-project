@@ -53,8 +53,8 @@ to_predicate_syntax((GroundedThingA;GroundedThingB), HubertThing):-
     to_predicate_syntax(GroundedThingB, B),
     HubertThing = or(A,B), !.
 
-to_predicate_syntax(true, true_):- !.
-to_predicate_syntax(false, false_):- !.
+to_predicate_syntax(true, true):- !.
+to_predicate_syntax(false, false):- !.
 
 to_predicate_syntax(GroundedThing, GroundedThing):- 
     ground(GroundedThing), !.
@@ -151,26 +151,26 @@ assign_to(F, _, _, F) :- !.
 
 simplify_formula(not(A), Sf):-
     simplify_formula(A, As),
-    (   As = false_ -> Sf = true_;
-        As = true_  -> Sf = false_;
+    (   As = false -> Sf = true;
+        As = true  -> Sf = false;
         Sf = not(As)
     ), !.
 
 simplify_formula(and(A, B), Sf):-
     simplify_formula(A, As), simplify_formula(B, Bs),
     (
-        (As = false_ ; Bs = false_) -> Sf = false_;
-        (As = true_) -> Sf = Bs;
-        (Bs = true_) -> Sf = As;
+        (As = false ; Bs = false) -> Sf = false;
+        (As = true) -> Sf = Bs;
+        (Bs = true) -> Sf = As;
         Sf = and(As, Bs)
     ), !.
 
 simplify_formula(or(A, B), Sf):-
     simplify_formula(A, As), simplify_formula(B, Bs),
     (
-        (As = true_; Bs = true_) -> Sf = true_;
-        (As = false_) -> Sf = Bs;
-        (Bs = false_) -> Sf = As;
+        (As = true; Bs = true) -> Sf = true;
+        (As = false) -> Sf = Bs;
+        (Bs = false) -> Sf = As;
         Sf = or(As, Bs)
     ), !.
 
@@ -178,15 +178,15 @@ simplify_formula(F, F):-
     ground(F); writeln(F), throw("This is unexpected."), !.
 
 
-negate(true_, false_).
-negate(false_, true_).
+negate(true, false).
+negate(false, true).
 
 % Formula Rewrite due to assertions
 % formula_given_evidence(+Formula, +EvidenceFormula, -ChangedFormula)
 formula_given_evidence(Formula, EvidenceFormula, ChangedFormula):-
-    formula_given_evidence_(Formula, true_, EvidenceFormula, ChangedFormula).
+    formula_given_evidence_(Formula, true, EvidenceFormula, ChangedFormula).
 
-% Value is the true_/false_ value of the Expr in 3rd argument
+% Value is the true/false value of the Expr in 3rd argument
 formula_given_evidence_(F, Value, not(A), FO):-
     negate(Value, V2),
     formula_given_evidence_(F, V2, A, FO), !.
@@ -196,21 +196,21 @@ formula_given_evidence_(F, Value, and(A,B), FO):-
     formula_given_evidence_(FO1, Value, B, FO), !.
 
 formula_given_evidence_(F, Value, or(A,B), FO):-
-    Value = true_ -> (
+    Value = true -> (
         % Three choices:
-        formula_given_evidence_(F, true_, A, FO1_1),
-        formula_given_evidence_(FO1_1, false_, B, FO1),
+        formula_given_evidence_(F, true, A, FO1_1),
+        formula_given_evidence_(FO1_1, false, B, FO1),
 
-        formula_given_evidence_(F, false_, A, FO2_1),
-        formula_given_evidence_(FO2_1, true_, B, FO2),
+        formula_given_evidence_(F, false, A, FO2_1),
+        formula_given_evidence_(FO2_1, true, B, FO2),
 
-        formula_given_evidence_(F, true_, A, FO3_1),
-        formula_given_evidence_(FO3_1, true_, B, FO3),
+        formula_given_evidence_(F, true, A, FO3_1),
+        formula_given_evidence_(FO3_1, true, B, FO3),
 
         FO = or(FO1, or(FO2, FO3))
     ); (
-        formula_given_evidence_(F, false_, A, FO1),
-        formula_given_evidence_(FO1, false_, B, FO)
+        formula_given_evidence_(F, false, A, FO1),
+        formula_given_evidence_(FO1, false, B, FO)
     ), !.
 
 formula_given_evidence_(F, Value, A, FO):-
