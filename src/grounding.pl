@@ -95,7 +95,7 @@ collect_ground_literals(C, Groundings):-
 % GroundLiterals is a list of "(Prob :: Head)" for each ground literal.
 ground_program(Program, GroundLiterals, GroundedProgram):-
     ground_iter(Program, UnuniqueGLs, GroundedProgram),
-    list_to_ord_set(UnuniqueGLs, GroundLiterals).
+    list_to_ord_set(UnuniqueGLs, GroundLiterals), !.
 
 ground_iter([], [], []).
 ground_iter([P1|PT], GroundLiterals, GP):-
