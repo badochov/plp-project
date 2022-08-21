@@ -1,9 +1,6 @@
 :- begin_tests(calc_probability).
 
-:- [calc_probability].
-
-float_cmp(F1, F2) :- float_cmp(F1, F2, 0.001).
-float_cmp(F1, F2, Eps) :- F1 - Eps =< F2, F1 + Eps >= F2.
+:- [calc_probability, utils].
 
 test(calc_probability__1) :- 
     rb_new(VarPs1), rb_insert(VarPs1, x, 0.42, VarPs),

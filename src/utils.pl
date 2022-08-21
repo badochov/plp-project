@@ -23,3 +23,7 @@ linear_eq_ref_search_(Item, [H|HayStack], NCur, Nth0):-
         -> Nth0 = NCur;
         NCur1 is NCur + 1,
         linear_eq_ref_search_(Item, HayStack, NCur1, Nth0).
+
+
+float_cmp(F1, F2) :- float_cmp(F1, F2, 0.001).
+float_cmp(F1, F2, Eps) :- F1 - Eps =< F2, F1 + Eps >= F2.
