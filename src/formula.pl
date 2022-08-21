@@ -53,6 +53,9 @@ rewrite_to_Hubert_syntax((GroundedThingA;GroundedThingB), HubertThing):-
     rewrite_to_Hubert_syntax(GroundedThingB, B),
     HubertThing = or(A,B), !.
 
+rewrite_to_Hubert_syntax(true, true_):- !.
+rewrite_to_Hubert_syntax(false, false_):- !.
+
 rewrite_to_Hubert_syntax(GroundedThing, GroundedThing):- 
     ground(GroundedThing), !.
 
