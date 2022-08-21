@@ -69,6 +69,17 @@ term_expansion( (P :: (Head <--- Body)), [
     ErrSort =.. [sort, ErrSortHead].
 
 
+term_expansion( (Head <--- Body), [
+    (FunctionSort),
+    (Head <--- Body)
+]):-
+    Head =.. [H|HArgs],
+    include(var, HArgs, Vars),
+    maplist({Body}/[V,S]>>find_var_sort(V,S,Body), Vars, FuncSorts),
+    FuncSortHead =.. [H|FuncSorts],
+    FunctionSort =.. [sort, FuncSortHead].
+
+
 % iff Clause is a problog clause, give Probability, Head and Body of it.
 % problog_clause(+Clause, -Probability, -Head, -Body)
 problog_clause(C, 1, Head, Body):-
