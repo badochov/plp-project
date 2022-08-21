@@ -94,17 +94,17 @@ split_biimplication(A, B, Formula):-
     Formula = and(F1, F2).
 
 
-formula_iter([], []).
-formula_iter([[H,B]|Biimplications], [F|Formulas]):-
+program_formula_iter([], []).
+program_formula_iter([[H,B]|Biimplications], [F|Formulas]):-
     split_biimplication(H, B, F),
-    formula_iter(Biimplications, Formulas).
+    program_formula_iter(Biimplications, Formulas).
 
 
 % Convert a GroundedProgram to propositional logic
-% GroundedProgram: A list of [P :: Head <--- Body]
-formula(GroundedProgram, Formula):-
+% GroundedProgram: A list of [Head <--- Body]
+program_formula(GroundedProgram, Formula):-
     clark_completion(GroundedProgram, Biimplications),
-    formula_iter(Biimplications, Formulas),
+    program_formula_iter(Biimplications, Formulas),
     reduce_and_product(Formulas, Formula), !.
 
 
