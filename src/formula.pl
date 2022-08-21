@@ -175,3 +175,42 @@ simplify_formula(F, F):-
     ground(F); writeln(F), throw("This is unexpected."), !.
 
 
+negate(true_, false_).
+negate(false_, true_).
+
+% Formula Rewrite due to assertions
+% formula_given_evidence(+Formula, +EvidenceFormula, -ChangedFormula)
+formula_given_evidence(Formula, EvidenceFormula, ChangedFormula):-
+    formula_given_evidence_(Formula, true_, EvidenceFormula, ChangedFormula).
+
+% Value is the true_/false_ value of the Expr in 3rd argument
+formula_given_evidence_(F, Value, (\+ A), FO):-
+    negate(Value, V2),
+    formula_given_evidence_(F, V2, A, FO), !.
+
+formula_given_evidence_(F, Value, and(A,B), FO):-
+    formula_given_evidence_(F, Value, A, FO1),
+    formula_given_evidence_(F, Value, B, FO2),
+    FO = and(FO1, FO2), !.
+
+formula_given_evidence_(F, Value, or(A,B), FO):-
+    Value = true_ -> (
+        % Three choices:
+        formula_given_evidence_(F, true_, A, FO1_1),
+        formula_given_evidence_(FO1_1, false_, B, FO1),
+
+        formula_given_evidence_(F, false_, A, FO2_1),
+        formula_given_evidence_(FO2_1, true_, B, FO2),
+
+        formula_given_evidence_(F, true_, A, FO3_1),
+        formula_given_evidence_(FO3_1, true_, B, FO3),
+
+        FO = or(FO1, or(FO2, FO3))
+    ); (
+        formula_given_evidence_(F, false_, A, FO1),
+        formula_given_evidence_(FO1, false_, B, FO)
+    ), !.
+
+formula_given_evidence_(F, Value, A, FO):-
+    (\+ ground(A)) -> format("~w ~w", "Something went wrong, argument not ground:", A);
+        assign_to(F, A, Value, FO1), simplify_formula(FO1, FO),!.
