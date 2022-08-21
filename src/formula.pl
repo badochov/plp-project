@@ -25,7 +25,7 @@ reduce_and_product([B|Bodies], Formula):-
 % Builds a list of `Head-[Body1,Body2]` for the given program.
 sorted_head_iter([], H, H).
 sorted_head_iter([C|GP], Heads1, Heads3):-
-    C = (_ :: H <--- B),
+    C = (H <--- B),
     (get_assoc(H, Heads1, DL1, Heads2, DL2);(DL1 = DL-DL, put_assoc(H, Heads1, DL2, Heads2))),
     dlist_append(DL1, [B|T]-T, DL2),
     sorted_head_iter(GP, Heads2, Heads3).

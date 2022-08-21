@@ -67,21 +67,6 @@ ground_clause(C, GCs):-
         ground_compound(Vs, _, Head, HeadG),
         GC = (P :: HeadG <--- BodyG)), GCs)), !.
     
-find_var_sort(Var, Sort, (\+ A)):-
-    !, find_var_sort(Var, Sort, A).
-find_var_sort(Var, Sort, (A,B)):-
-    (find_var_sort(Var, Sort, A);
-    find_var_sort(Var, Sort, B)), !.
-find_var_sort(Var, Sort, (A;B)):-
-    (find_var_sort(Var, Sort, A);
-    find_var_sort(Var, Sort, B)), !.
-find_var_sort(Var, Sort, A):-
-    A =.. [H|Args],
-    nth0(N, Args, Var),
-    length(Args, L),length(SArgs, L),
-    SA =.. [H|SArgs],
-    sort(SA),
-    nth0(N, SArgs, Sort), !.
 
 % True if VarsOut ~ [x1, y2, ...] is a possible binding out of Sorts ~ [[x1,x2], [y1,y2], ...]
 pick_binding([], []).

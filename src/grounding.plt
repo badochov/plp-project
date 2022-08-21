@@ -45,28 +45,27 @@ test(ground_program):-
     problog_collect(P),
     ground_program(P, GL, GP), !,
     is_permutation(GL, [
-        ::(1,fr(x1)),
-        ::(1,fr(x2)),
+        ::(0.3,b(x1)),
+        ::(0.3,b(x2)),
 
         ::(0.6,a(x1,y1)),
         ::(0.6,a(x1,y2)),
         ::(0.6,a(x2,y1)),
         ::(0.6,a(x2,y2)),
 
-        ::(0.3,b(x1)),
-        ::(0.3,b(x2)),
-
-        ::(0.8,prob_fr(x1)),
-        ::(0.8,prob_fr(x2))]),
+        ::(0.8,prob_fr_err_1(x1,y1)),
+        ::(0.8,prob_fr_err_1(x1,y2)),
+        ::(0.8,prob_fr_err_1(x2,y1)),
+        ::(0.8,prob_fr_err_1(x2,y2))]),
     is_permutation(GP, [
-        ::(1,<---(fr(x1),(a(x1,y1),\+b(x1)))),
-        ::(1,<---(fr(x1),(a(x1,y2),\+b(x1)))),
-        ::(1,<---(fr(x2),(a(x2,y1),\+b(x2)))),
-        ::(1,<---(fr(x2),(a(x2,y2),\+b(x2)))),
+        <---(fr(x1),(a(x1,y1),\+b(x1))),
+        <---(fr(x1),(a(x1,y2),\+b(x1))),
+        <---(fr(x2),(a(x2,y1),\+b(x2))),
+        <---(fr(x2),(a(x2,y2),\+b(x2))),
 
-        ::(0.8,<---(prob_fr(x1),(a(x1,y1),\+b(x1)))),
-        ::(0.8,<---(prob_fr(x1),(a(x1,y2),\+b(x1)))),
-        ::(0.8,<---(prob_fr(x2),(a(x2,y1),\+b(x2)))),
-        ::(0.8,<---(prob_fr(x2),(a(x2,y2),\+b(x2))))]).
+        <---(prob_fr(x1),(prob_fr_err_1(x1,y1),a(x1,y1),\+b(x1))),
+        <---(prob_fr(x1),(prob_fr_err_1(x1,y2),a(x1,y2),\+b(x1))),
+        <---(prob_fr(x2),(prob_fr_err_1(x2,y1),a(x2,y1),\+b(x2))),
+        <---(prob_fr(x2),(prob_fr_err_1(x2,y2),a(x2,y2),\+b(x2)))]).
 
 :- end_tests(ground).
