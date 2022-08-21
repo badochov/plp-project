@@ -1,6 +1,21 @@
 # Knowledge Compilation
 Final project for subject Probabilistic Logic Programming implementing knowledge compilation using BDDs in prolog.
 
+## Optional Dependencies
+
+`bdd_view.pl` has a `view_bdd/1` predicate that shows the built BDD in a gui graph. This requires the `prolog_graphviz` library, which can be installed with `swipl -g 'pack_install(prolog_graphviz)' -t halt`.
+
+An example query to build such a BDD and show it (from within src/ directory):
+```pl
+[bdd_view, problog_examples/program_4].
+
+problog_collect(P),
+ground_program(P, GL, GP),
+formula(GP, F),
+construct_bdd(F, BDD,
+view_bdd(BDD).
+
+```
 ## Logic flow
 1. Ground program
 2. Break cycles
