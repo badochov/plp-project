@@ -1,17 +1,5 @@
 
-:- [grammar].
-
-dlist_append(L1 - T1, T1 - T2, L1 - T2).
-
-
-dlist_member(E, List-End):-
-    List \== End,
-    List = [E|_].
-
-dlist_member(E, List-End):-
-    List \== End,
-    List = [_|Tail],
-    dlist_member(E, Tail-End).
+:- [grammar, dlist].
 
 
 function_sort_bind_variables(Vs, Vs, [], [], []).
