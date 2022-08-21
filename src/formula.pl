@@ -37,21 +37,21 @@ sorted_head(GroundedProgram, List):-
     assoc_to_list(Heads2, ListOfDL),
     maplist([H-DL, H-L]>>(DL = L-LT, LT = []), ListOfDL, List), !.
 
-% --- to_predicate_syntax(+GroundedThing, -HubertThing) ---
-% Rewrites a body into Hubert syntax: not/1, and/2, or/2
-to_predicate_syntax(\+ GroundedThing, HubertThing):-
+% --- to_predicate_syntax(+GroundedThing, -PredicateFormula) ---
+% Rewrites a body into predicate syntax: not/1, and/2, or/2
+to_predicate_syntax(\+ GroundedThing, PredicateFormula):-
     to_predicate_syntax(GroundedThing, I),
-    HubertThing = not(I), !.
+    PredicateFormula = not(I), !.
 
-to_predicate_syntax((GroundedThingA,GroundedThingB), HubertThing):-
+to_predicate_syntax((GroundedThingA,GroundedThingB), PredicateFormula):-
     to_predicate_syntax(GroundedThingA, A),
     to_predicate_syntax(GroundedThingB, B),
-    HubertThing = and(A,B), !.
+    PredicateFormula = and(A,B), !.
 
-to_predicate_syntax((GroundedThingA;GroundedThingB), HubertThing):-
+to_predicate_syntax((GroundedThingA;GroundedThingB), PredicateFormula):-
     to_predicate_syntax(GroundedThingA, A),
     to_predicate_syntax(GroundedThingB, B),
-    HubertThing = or(A,B), !.
+    PredicateFormula = or(A,B), !.
 
 to_predicate_syntax(true, true):- !.
 to_predicate_syntax(false, false):- !.
