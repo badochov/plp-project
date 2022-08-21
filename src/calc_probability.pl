@@ -16,8 +16,10 @@ grounded_literals_to_variable_probabilities_tree([GL|GLs], VarPsRB):-
     rb_insert(VarPsRB1, Head, P, VarPsRB).
 
 get_var_probability(Var, VarPsRB, ProbYes, ProbNo):-
-        rb_lookup(Var, ProbYes, VarPsRB), ProbNo is 1 - ProbYes, !.
-get_var_probability(Var, VarPsRB, 1, 1).
+    (
+        rb_lookup(Var, ProbYes, VarPsRB) -> ProbNo is 1 - ProbYes;
+        ProbYes is 1, ProbNo is 1
+    ), !.
 
 
 calc_probability(BDD, VarProbabilities, P) :-
@@ -27,12 +29,13 @@ calc_probability(BDD, VarProbabilities, P) :-
 
 calc_probability_(leaf(P), _, P) :- !.
 calc_probability_(N, _, P) :- get_from_cache(N, P), !.
-calc_probability_(node(LOBDD, Var, ROBDD), VarPs, P) :-
-        calc_probability_(LOBDD, VarPs, Lp),
-        calc_probability_(ROBDD, VarPs, Rp),
-        get_var_probability(Var, VarPs, ProbYes, ProbNo),
-        P is Rp * ProbYes + Lp * ProbNo.
-        save_to_cache(node(LOBDD, Np, ROBDD), P).
+calc_probability_(Node, VarPs, P) :-
+    Node = node(LOBDD, Var, ROBDD),
+    calc_probability_(LOBDD, VarPs, Lp),
+    calc_probability_(ROBDD, VarPs, Rp),
+    get_var_probability(Var, VarPs, ProbYes, ProbNo),
+    P is Rp * ProbYes + Lp * ProbNo,
+    save_to_cache(Node, P).
 
 get_from_cache(N, P) :- cached_probability(N, P).
 save_to_cache(N, P) :- asserta(cached_probability(N, P)).
