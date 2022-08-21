@@ -187,14 +187,13 @@ formula_given_evidence(Formula, EvidenceFormula, ChangedFormula):-
     formula_given_evidence_(Formula, true_, EvidenceFormula, ChangedFormula).
 
 % Value is the true_/false_ value of the Expr in 3rd argument
-formula_given_evidence_(F, Value, (\+ A), FO):-
+formula_given_evidence_(F, Value, not(A), FO):-
     negate(Value, V2),
     formula_given_evidence_(F, V2, A, FO), !.
 
 formula_given_evidence_(F, Value, and(A,B), FO):-
     formula_given_evidence_(F, Value, A, FO1),
-    formula_given_evidence_(F, Value, B, FO2),
-    FO = and(FO1, FO2), !.
+    formula_given_evidence_(FO1, Value, B, FO), !.
 
 formula_given_evidence_(F, Value, or(A,B), FO):-
     Value = true_ -> (
