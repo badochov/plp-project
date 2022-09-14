@@ -14,16 +14,16 @@ Create a metainterpreter of a prolog language being able to calculate probabilit
 An example of the type of bdd trees the program builds can be seen in `causal_sprinkler.svg`. This one built from the example program in `src/problog_examples/causal_sprinkler.pl`.
 
 ## Dependencies
-`bdd_view.pl` has a `view_bdd/1` predicate that shows the built BDD in a gui graph. This requires the `prolog_graphviz` library, which can be installed with `swipl -g 'pack_install(prolog_graphviz)' -t halt`.
+`bdd_view.pl` has a `view_bdd/1` predicate that shows the built BDD in a gui graph. This requires the `prolog_graphviz` library, which can be installed with `swipl -g 'pack_install(prolog_graphviz)' -t halt` it requires `graphviz` to be installed.
 
 An example query to build such a BDD and show it (from within src/ directory):
 ```pl
-[bdd_view, problog_examples/program_4].
+[bdd_view, problog_examples/program_3].
 
 problog_collect(P),
 ground_program(P, GL, GP),
-formula(GP, F),
-construct_bdd(F, BDD,
+progam_formula(GP, F),
+construct_bdd(F, BDD),
 view_bdd(BDD).
 ```
 
