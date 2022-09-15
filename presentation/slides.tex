@@ -1,0 +1,183 @@
+\documentclass[10pt]{beamer}
+
+\usepackage[english]{babel}
+\usepackage{tipa}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\usepackage{svg}
+\usepackage[abs]{overpic}
+\usepackage{tikz}
+\usepackage{mwe}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{mathtools}
+\usepackage{listings}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{hyperref}
+\usepackage{textcomp}
+\hypersetup{colorlinks,breaklinks,
+urlcolor=black,
+linkcolor=black,
+citecolor=black,
+}
+\usepackage[export]{adjustbox}
+\usepackage{float}
+% 表格
+\usepackage{tabularx}
+% 动画
+\usepackage{animate}
+% 背景
+
+% --- Bibliography ---
+
+\usepackage[backend=biber,bibencoding=utf8,style=numeric]{biblatex}
+\addbibresource{bibliography.bib}
+%\setbeamertemplate{bibliography item}{[\theenumiv]}
+
+% --- Notes ---
+\usepackage{pgfpages}
+%\setbeameroption{show notes on second screen}
+
+% ---- Text formatting ----
+
+
+\newcommand\imp{\ensuremath{\Rightarrow}}
+\newcommand\diag[1]{\ensuremath{\text{diag}\qty(#1)}}
+% \newcommand\real{\ensuremath{\text{Re}}}
+\newcommand\imag{\ensuremath{\text{Im}}}
+
+% \blacktriangleright is a thing
+\newcommand\litem{\item[$\ltimes$]}
+\newcommand\impitem{\item[$\Rightarrow$]}
+\newcommand\hitem{\item[$\leadsto$]}
+
+% --- More than 3 nested levels ---
+
+\usepackage{enumitem}
+\setlistdepth{9}
+
+\setlist[itemize,1]{label=$\triangleright$}
+\setlist[itemize,2]{label=$\ltimes$}
+\setlist[itemize,3]{label=$\Rightarrow$}
+\setlist[itemize,4]{label=$\leadsto$}
+\setlist[itemize,5]{label=$\bullet$}
+\setlist[itemize,6]{label=$\bullet$}
+\setlist[itemize,7]{label=$\bullet$}
+\setlist[itemize,8]{label=$\bullet$}
+\setlist[itemize,9]{label=$\bullet$}
+
+\renewlist{itemize}{itemize}{9}
+
+% Shorthands
+\newcommand\pic[3][0.7]{
+	\begin{figure}
+		\includegraphics[max width=\textwidth,max height=#1\textheight]{#2}
+		\caption{#3}
+	\end{figure}
+}
+\newcommand\svgpic[2]{
+	\begin{figure}
+		\includesvg{#1}
+		\caption{#2}
+	\end{figure}
+}
+
+% Formatting and style
+%\usetheme{Dresden}
+\usecolortheme{crane}
+%\setbeamercolor{structure}{fg=orange}
+\setbeamerfont{caption}{size=\scriptsize}
+\setbeamertemplate{caption}[numbered]
+
+
+% Draft Mode
+\newboolean{release}
+\setboolean{release}{false}
+\ifthenelse{\boolean{release}}{
+	\newcommand\fixme[1]{}	
+}{
+	\usepackage{draftwatermark}
+	\SetWatermarkText{DRAFT}
+	\SetWatermarkScale{1}
+	\newcommand\fixme[1]{\textcolor{red}{#1}}	
+}
+
+
+
+
+\let\glq\undefined
+\let\grq\undefined
+
+
+
+\title[Number of Neutrinos]{
+    Experimental Determination of the Number of Neutrino Generations
+}
+\author[Vytautas Mickus, 2022]{
+    Vytautas Mickus
+}
+\institute[LMU]{
+    University of Munich \\
+    \texttt{\href{vytautas.mickus@campus.lmu.de}{vytautas.mickus@campus.lmu.de}}
+    }
+\date[Key Experiments in Particle Physics, July 5, 2022]{
+    Key Experiments in Particle Physics Seminar\\
+    July 5, 2022
+}
+
+
+
+\begin{document}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+
+\begin{frame}{Outline}
+    \tableofcontents
+\end{frame}
+
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+
+% -----------------
+
+
+\section{Theoretical Background}
+
+
+
+\section{Conclusion}
+\begin{frame}{Conclusion}
+	\begin{itemize}
+		\item The number of neutrinos was probed directly by LEP.
+		\item The number of (light) neutrino families was put to rest at 3, thanks to the extremely high precision of LEP.
+	\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}{}
+    \centering \Large
+    \emph{Thank you!}
+  \end{frame}
+
+\section*{References}
+\begin{frame}[allowframebreaks]{References}
+% \bibliographystyle{apalike}
+%\bibliography{bibliography.bib}
+\printbibliography
+\end{frame}
+
+
+\section*{Bonus Slides}
+
+\end{document}
